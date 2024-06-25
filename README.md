@@ -1,5 +1,5 @@
 # Break-Reminder-For-Win11 🚀
-**A simple bash script to remind you to take a break from your system** 🛠️
+**A simple batch script to remind you to take a break from your system** 🛠️
 
 ---
 
