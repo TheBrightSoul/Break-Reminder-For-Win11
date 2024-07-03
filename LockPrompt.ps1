@@ -7,11 +7,16 @@ $messages = Get-Content $messagesFile
 # Select a random message
 $randomMessage = $messages | Get-Random
 
+# Check if icon file exists
+$iconPath = Join-Path $PSScriptRoot "break.ico"
+$iconAttribute = if (Test-Path $iconPath) { "Icon='$iconPath'" } else { "" }
+
 # XAML for the window
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Break Reminder" Height="200" Width="400" WindowStartupLocation="CenterScreen">
+        Title="Break Reminder" Height="200" Width="400" WindowStartupLocation="CenterScreen"
+        $iconAttribute>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -29,7 +34,13 @@ $randomMessage = $messages | Get-Random
 "@
 
 $reader = New-Object System.Xml.XmlNodeReader $xaml
-$window = [Windows.Markup.XamlReader]::Load($reader)
+
+try {
+    $window = [Windows.Markup.XamlReader]::Load($reader)
+} catch {
+    Write-Host "Error loading XAML: $_"
+    exit 1
+}
 
 # Get controls
 $messageText = $window.FindName("MessageText")
